@@ -1,18 +1,22 @@
 import { AppLayout } from "@/components/layout/AppLayout";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { onboardingTasks, exitTasks, employees } from "@/data/mockData";
+import { TaskDetailDialog } from "@/components/shared/TaskDetailDialog";
+import { onboardingTasks, exitTasks, employees, type OnboardingTask, type ExitTask } from "@/data/mockData";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { MessageSquare, Paperclip } from "lucide-react";
+
+type CombinedTask = (OnboardingTask | ExitTask) & { type: "onboarding" | "exit" };
 
 const Tasks = () => {
-  const allTasks = [
+  const allTasks: CombinedTask[] = [
     ...onboardingTasks.map((t) => ({ ...t, type: "onboarding" as const })),
     ...exitTasks.map((t) => ({ ...t, type: "exit" as const })),
   ];
   const [filter, setFilter] = useState<string>("all");
+  const [selectedTask, setSelectedTask] = useState<CombinedTask | null>(null);
 
   const filtered = filter === "all" ? allTasks : allTasks.filter((t) => t.status === filter);
-
   const getEmployeeName = (id: string) => employees.find((e) => e.id === id)?.name || "Unknown";
 
   const filters = [
@@ -51,11 +55,16 @@ const Tasks = () => {
                 <th className="text-left py-3 px-4 text-muted-foreground font-medium">Assigned To</th>
                 <th className="text-left py-3 px-4 text-muted-foreground font-medium">Type</th>
                 <th className="text-left py-3 px-4 text-muted-foreground font-medium">Status</th>
+                <th className="text-left py-3 px-4 text-muted-foreground font-medium w-16"></th>
               </tr>
             </thead>
             <tbody>
               {filtered.map((task) => (
-                <tr key={task.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors">
+                <tr
+                  key={task.id}
+                  onClick={() => setSelectedTask(task)}
+                  className="border-b border-border/50 hover:bg-muted/20 transition-colors cursor-pointer"
+                >
                   <td className="py-3 px-4">
                     <p className="font-medium text-foreground">{task.title}</p>
                     <p className="text-xs text-muted-foreground">{task.description}</p>
@@ -68,12 +77,33 @@ const Tasks = () => {
                     </span>
                   </td>
                   <td className="py-3 px-4"><StatusBadge status={task.status} /></td>
+                  <td className="py-3 px-4">
+                    <div className="flex items-center gap-1.5">
+                      {task.comments.length > 0 && (
+                        <span className="flex items-center gap-0.5 text-[10px] text-muted-foreground">
+                          <MessageSquare className="w-3 h-3" /> {task.comments.length}
+                        </span>
+                      )}
+                      {task.attachments.length > 0 && (
+                        <span className="flex items-center gap-0.5 text-[10px] text-muted-foreground">
+                          <Paperclip className="w-3 h-3" /> {task.attachments.length}
+                        </span>
+                      )}
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </div>
+
+      <TaskDetailDialog
+        task={selectedTask}
+        open={!!selectedTask}
+        onOpenChange={(open) => !open && setSelectedTask(null)}
+        employeeName={selectedTask ? getEmployeeName(selectedTask.employeeId) : undefined}
+      />
     </AppLayout>
   );
 };
