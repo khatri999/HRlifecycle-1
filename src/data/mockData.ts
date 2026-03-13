@@ -73,6 +73,9 @@ export interface ExitTask {
   category: TaskDepartment;
   comments: TaskComment[];
   attachments: TaskAttachment[];
+  createdAt: string;
+  remindersSent: number;
+  lastReminderAt?: string;
 }
 
 export interface Notification {
