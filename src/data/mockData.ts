@@ -309,6 +309,8 @@ export function generateExitTasks(employee: Employee): ExitTask[] {
       category: tpl.category,
       comments: [],
       attachments: [],
+      createdAt: new Date().toISOString(),
+      remindersSent: 0,
     };
   });
 }

@@ -11,6 +11,7 @@ const statusConfig: Record<StatusType, { label: string; className: string }> = {
   "in-progress": { label: "In Progress", className: "bg-info/10 text-info" },
   pending: { label: "Pending", className: "bg-warning/10 text-warning" },
   overdue: { label: "Overdue", className: "bg-destructive/10 text-destructive" },
+  delayed: { label: "Delayed", className: "bg-warning/10 text-warning" },
   "not-started": { label: "Not Started", className: "bg-muted text-muted-foreground" },
   "resignation-submitted": { label: "Resignation Submitted", className: "bg-warning/10 text-warning" },
   clearance: { label: "Clearance", className: "bg-info/10 text-info" },
