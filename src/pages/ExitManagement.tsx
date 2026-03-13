@@ -36,12 +36,39 @@ const ExitManagement = () => {
   const [expandedId, setExpandedId] = useState<string | null>(exitEmployees[0]?.id || null);
   const [selectedTask, setSelectedTask] = useState<ExitTask | null>(null);
   const [generatedTasksMap, setGeneratedTasksMap] = useState<Record<string, ExitTask[]>>({});
+  const [reminderUpdatedTasks, setReminderUpdatedTasks] = useState<ExitTask[]>(exitTasks);
 
   const getTasksForEmployee = (empId: string) => {
-    const existing = exitTasks.filter((t) => t.employeeId === empId);
+    const existing = reminderUpdatedTasks.filter((t) => t.employeeId === empId);
     const generated = generatedTasksMap[empId] || [];
     return [...existing, ...generated];
   };
+
+  const allTasksRef = useRef<ExitTask[]>([]);
+  allTasksRef.current = [...reminderUpdatedTasks, ...Object.values(generatedTasksMap).flat()];
+
+  useEffect(() => {
+    const cleanup = startReminderPolling(
+      () => allTasksRef.current,
+      () => employees,
+      (updatedTasks) => {
+        // Split back into base and generated
+        const baseIds = new Set(exitTasks.map((t) => t.id));
+        const updatedBase = updatedTasks.filter((t) => baseIds.has(t.id));
+        const updatedGenerated: Record<string, ExitTask[]> = {};
+        updatedTasks.filter((t) => !baseIds.has(t.id)).forEach((t) => {
+          if (!updatedGenerated[t.employeeId]) updatedGenerated[t.employeeId] = [];
+          updatedGenerated[t.employeeId].push(t);
+        });
+        setReminderUpdatedTasks(updatedBase.length > 0 ? updatedBase : reminderUpdatedTasks);
+        if (Object.keys(updatedGenerated).length > 0) {
+          setGeneratedTasksMap((prev) => ({ ...prev, ...updatedGenerated }));
+        }
+      },
+      60000 // Check every 60 seconds (represents 24h cycle in production)
+    );
+    return cleanup;
+  }, []);
 
   const handleGenerateExitTasks = (empId: string) => {
     const emp = employees.find((e) => e.id === empId);

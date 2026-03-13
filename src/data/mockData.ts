@@ -336,7 +336,7 @@ export function getTasksByDepartment(tasks: Array<OnboardingTask | ExitTask>) {
     const dept = t.assignedDepartment;
     if (!deptMap[dept]) deptMap[dept] = { total: 0, pending: 0, completed: 0 };
     deptMap[dept].total++;
-    if (t.status === "pending" || t.status === "overdue") deptMap[dept].pending++;
+    if (t.status === "pending" || t.status === "overdue" || t.status === "delayed") deptMap[dept].pending++;
     if (t.status === "completed") deptMap[dept].completed++;
   });
   return Object.entries(deptMap).map(([dept, stats]) => ({ department: dept, ...stats }));
