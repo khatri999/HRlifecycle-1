@@ -1,0 +1,475 @@
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
+
+export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.4"
+  }
+  public: {
+    Tables: {
+      document_templates: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          document_type: string
+          id: string
+          name: string
+          placeholders: Json
+          template_html: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          document_type: string
+          id?: string
+          name: string
+          placeholders?: Json
+          template_html?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          document_type?: string
+          id?: string
+          name?: string
+          placeholders?: Json
+          template_html?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      employees: {
+        Row: {
+          avatar: string | null
+          created_at: string | null
+          date_of_birth: string | null
+          department: string
+          designation: string
+          email: string | null
+          employee_id: string
+          employment_type: string | null
+          exit_date: string | null
+          exit_interview_notes: string | null
+          exit_progress: number | null
+          exit_status: string | null
+          fnf_status: string | null
+          id: string
+          joining_date: string
+          last_working_day: string | null
+          location: string | null
+          manager: string | null
+          name: string
+          onboarding_progress: number | null
+          onboarding_status: string | null
+          phone: string | null
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          avatar?: string | null
+          created_at?: string | null
+          date_of_birth?: string | null
+          department: string
+          designation: string
+          email?: string | null
+          employee_id: string
+          employment_type?: string | null
+          exit_date?: string | null
+          exit_interview_notes?: string | null
+          exit_progress?: number | null
+          exit_status?: string | null
+          fnf_status?: string | null
+          id?: string
+          joining_date: string
+          last_working_day?: string | null
+          location?: string | null
+          manager?: string | null
+          name: string
+          onboarding_progress?: number | null
+          onboarding_status?: string | null
+          phone?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          avatar?: string | null
+          created_at?: string | null
+          date_of_birth?: string | null
+          department?: string
+          designation?: string
+          email?: string | null
+          employee_id?: string
+          employment_type?: string | null
+          exit_date?: string | null
+          exit_interview_notes?: string | null
+          exit_progress?: number | null
+          exit_status?: string | null
+          fnf_status?: string | null
+          id?: string
+          joining_date?: string
+          last_working_day?: string | null
+          location?: string | null
+          manager?: string | null
+          name?: string
+          onboarding_progress?: number | null
+          onboarding_status?: string | null
+          phone?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      exit_clearance_forms: {
+        Row: {
+          contact_number: string
+          department: string
+          designation: string
+          employee_code: string
+          employee_id: string
+          employee_name: string
+          forwarding_address: string
+          handover_declaration: boolean
+          id: string
+          last_working_day: string
+          manager: string
+          personal_email: string
+          status: string
+          submitted_at: string
+          updated_at: string
+        }
+        Insert: {
+          contact_number: string
+          department: string
+          designation: string
+          employee_code: string
+          employee_id: string
+          employee_name: string
+          forwarding_address: string
+          handover_declaration?: boolean
+          id?: string
+          last_working_day: string
+          manager: string
+          personal_email: string
+          status?: string
+          submitted_at?: string
+          updated_at?: string
+        }
+        Update: {
+          contact_number?: string
+          department?: string
+          designation?: string
+          employee_code?: string
+          employee_id?: string
+          employee_name?: string
+          forwarding_address?: string
+          handover_declaration?: boolean
+          id?: string
+          last_working_day?: string
+          manager?: string
+          personal_email?: string
+          status?: string
+          submitted_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      exit_dept_tasks: {
+        Row: {
+          assigned_to: string | null
+          clearance_form_id: string | null
+          created_at: string
+          deadline: string | null
+          department: string
+          description: string | null
+          employee_id: string
+          id: string
+          notes: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          clearance_form_id?: string | null
+          created_at?: string
+          deadline?: string | null
+          department: string
+          description?: string | null
+          employee_id: string
+          id?: string
+          notes?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          clearance_form_id?: string | null
+          created_at?: string
+          deadline?: string | null
+          department?: string
+          description?: string | null
+          employee_id?: string
+          id?: string
+          notes?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exit_dept_tasks_clearance_form_id_fkey"
+            columns: ["clearance_form_id"]
+            isOneToOne: false
+            referencedRelation: "exit_clearance_forms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exit_document_uploads: {
+        Row: {
+          document_id: string | null
+          email_sent: boolean
+          email_sent_at: string | null
+          employee_id: string
+          file_name: string
+          file_url: string
+          id: string
+          uploaded_at: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          document_id?: string | null
+          email_sent?: boolean
+          email_sent_at?: string | null
+          employee_id: string
+          file_name: string
+          file_url: string
+          id?: string
+          uploaded_at?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          document_id?: string | null
+          email_sent?: boolean
+          email_sent_at?: string | null
+          employee_id?: string
+          file_name?: string
+          file_url?: string
+          id?: string
+          uploaded_at?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exit_document_uploads_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "generated_documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      generated_documents: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          created_by: string | null
+          document_type: string
+          employee_id: string
+          id: string
+          rendered_html: string
+          signature_data: string | null
+          stamp_data: string | null
+          status: string
+          template_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          document_type: string
+          employee_id: string
+          id?: string
+          rendered_html?: string
+          signature_data?: string | null
+          stamp_data?: string | null
+          status?: string
+          template_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          document_type?: string
+          employee_id?: string
+          id?: string
+          rendered_html?: string
+          signature_data?: string | null
+          stamp_data?: string | null
+          status?: string
+          template_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "generated_documents_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "document_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
+}
+
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+
+export const Constants = {
+  public: {
+    Enums: {},
+  },
+} as const

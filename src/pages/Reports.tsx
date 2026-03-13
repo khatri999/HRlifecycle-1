@@ -1,5 +1,6 @@
 import { AppLayout } from "@/components/layout/AppLayout";
 import { MetricCard } from "@/components/shared/MetricCard";
+import { ExportDataDropdown } from "@/components/employees/ExportDataDropdown";
 import { BarChart3, TrendingUp, Clock, Users } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
@@ -36,6 +37,9 @@ const COLORS = [
 const Reports = () => {
   return (
     <AppLayout title="Reports & Insights" subtitle="HR analytics and trends">
+      <div className="flex justify-end mb-4">
+        <ExportDataDropdown />
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <MetricCard title="Onboarding Rate" value="72%" icon={TrendingUp} subtitle="Completion this quarter" />
         <MetricCard title="Avg. Onboarding Time" value="12 days" icon={Clock} subtitle="Target: 10 days" iconClassName="bg-warning/10 text-warning" />

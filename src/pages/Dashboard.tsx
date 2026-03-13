@@ -4,24 +4,28 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { ProgressRing } from "@/components/shared/ProgressRing";
 import { Progress } from "@/components/ui/progress";
 import {
-  employees, dashboardStats, onboardingTasks, exitTasks,
-  getTasksByDepartment, getDepartmentClearance,
+  onboardingTasks, exitTasks,
+  getTasksByDepartment,
 } from "@/data/mockData";
+import { useEmployees, useEmployeeStats } from "@/hooks/useEmployees";
 import {
   Users, UserPlus, Clock, AlertCircle, ArrowRight, CalendarDays, LogOut, Building2,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Dashboard = () => {
+  const { data: stats } = useEmployeeStats();
+  const { data: employees = [] } = useEmployees();
+
   const onboardingEmployees = employees.filter((e) => e.status === "onboarding");
   const noticePeriodEmployees = employees.filter((e) => e.status === "notice-period");
   const allTasks = [...onboardingTasks, ...exitTasks];
   const pendingTasks = allTasks.filter((t) => t.status === "pending");
   const deptStats = getTasksByDepartment(allTasks);
 
-  // Exit clearance per employee
+  // Exit clearance per employee (still mock-based for tasks)
   const exitClearanceData = noticePeriodEmployees.map((emp) => {
-    const tasks = exitTasks.filter((t) => t.employeeId === emp.id);
+    const tasks = exitTasks.filter((t) => t.employeeId === emp.employee_id || t.employeeId === emp.id);
     const completed = tasks.filter((t) => t.status === "completed").length;
     const progress = tasks.length > 0 ? Math.round((completed / tasks.length) * 100) : 0;
     return { emp, progress, completed, total: tasks.length };
@@ -31,9 +35,9 @@ const Dashboard = () => {
     <AppLayout title="Dashboard" subtitle="Welcome back! Here's your HR overview.">
       {/* Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <MetricCard title="Total Employees" value={dashboardStats.totalEmployees} icon={Users} subtitle={`${dashboardStats.activeEmployees} active`} />
-        <MetricCard title="Onboarding" value={dashboardStats.onboarding} icon={UserPlus} subtitle="New joiners this month" iconClassName="bg-info/10 text-info" />
-        <MetricCard title="Notice Period" value={dashboardStats.noticePeriod} icon={Clock} subtitle="Serving notice" iconClassName="bg-warning/10 text-warning" />
+        <MetricCard title="Total Employees" value={stats?.total ?? 0} icon={Users} subtitle={`${stats?.active ?? 0} active`} />
+        <MetricCard title="Onboarding" value={stats?.onboarding ?? 0} icon={UserPlus} subtitle="New joiners this month" iconClassName="bg-info/10 text-info" />
+        <MetricCard title="Notice Period" value={stats?.noticePeriod ?? 0} icon={Clock} subtitle="Serving notice" iconClassName="bg-warning/10 text-warning" />
         <MetricCard title="Pending Tasks" value={pendingTasks.length} icon={AlertCircle} subtitle="Across all departments" iconClassName="bg-destructive/10 text-destructive" />
       </div>
 
@@ -47,18 +51,22 @@ const Dashboard = () => {
             </Link>
           </div>
           <div className="space-y-4">
-            {onboardingEmployees.map((emp) => (
-              <div key={emp.id} className="flex items-center gap-4 p-3 rounded-lg bg-muted/50">
-                <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold shrink-0">
-                  {emp.avatar}
+            {onboardingEmployees.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No employees currently onboarding</p>
+            ) : (
+              onboardingEmployees.map((emp) => (
+                <div key={emp.id} className="flex items-center gap-4 p-3 rounded-lg bg-muted/50">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold shrink-0">
+                    {emp.avatar || emp.name.split(" ").map((w) => w[0]).join("").slice(0, 2)}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground truncate">{emp.name}</p>
+                    <p className="text-xs text-muted-foreground">{emp.designation} · Joining {emp.joining_date}</p>
+                  </div>
+                  <ProgressRing progress={emp.onboarding_progress ?? 0} />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground truncate">{emp.name}</p>
-                  <p className="text-xs text-muted-foreground">{emp.role} · Joining {emp.joiningDate}</p>
-                </div>
-                <ProgressRing progress={emp.onboardingProgress} />
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
 
@@ -71,7 +79,7 @@ const Dashboard = () => {
                 <CalendarDays className="w-4 h-4 text-accent-foreground mt-0.5 shrink-0" />
                 <div>
                   <p className="text-sm font-medium text-foreground">{emp.name}</p>
-                  <p className="text-xs text-muted-foreground">Joining {emp.joiningDate}</p>
+                  <p className="text-xs text-muted-foreground">Joining {emp.joining_date}</p>
                 </div>
               </div>
             ))}
@@ -80,17 +88,19 @@ const Dashboard = () => {
                 <LogOut className="w-4 h-4 text-warning mt-0.5 shrink-0" />
                 <div>
                   <p className="text-sm font-medium text-foreground">{emp.name}</p>
-                  <p className="text-xs text-muted-foreground">LWD {emp.lastWorkingDay}</p>
+                  <p className="text-xs text-muted-foreground">LWD {emp.last_working_day || "TBD"}</p>
                 </div>
               </div>
             ))}
+            {onboardingEmployees.length === 0 && noticePeriodEmployees.length === 0 && (
+              <p className="text-sm text-muted-foreground">No upcoming events</p>
+            )}
           </div>
         </div>
       </div>
 
       {/* Department-wise Pending Tasks + Exit Clearance */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-        {/* Pending tasks by department */}
         <div className="bg-card rounded-xl border border-border p-6 animate-fade-in">
           <div className="flex items-center justify-between mb-5">
             <h2 className="font-display font-semibold text-foreground flex items-center gap-2">
@@ -107,20 +117,15 @@ const Dashboard = () => {
                 <div className="flex-1">
                   <Progress value={d.total > 0 ? (d.completed / d.total) * 100 : 0} className="h-2" />
                 </div>
-                <span className="text-xs font-medium text-foreground w-16 text-right">
-                  {d.completed}/{d.total}
-                </span>
+                <span className="text-xs font-medium text-foreground w-16 text-right">{d.completed}/{d.total}</span>
                 {d.pending > 0 && (
-                  <span className="text-xs bg-warning/10 text-warning px-1.5 py-0.5 rounded font-medium">
-                    {d.pending} pending
-                  </span>
+                  <span className="text-xs bg-warning/10 text-warning px-1.5 py-0.5 rounded font-medium">{d.pending} pending</span>
                 )}
               </div>
             ))}
           </div>
         </div>
 
-        {/* Exit Clearance Progress */}
         <div className="bg-card rounded-xl border border-border p-6 animate-fade-in">
           <div className="flex items-center justify-between mb-5">
             <h2 className="font-display font-semibold text-foreground">Exit Clearance Progress</h2>
@@ -137,11 +142,11 @@ const Dashboard = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="w-7 h-7 rounded-full bg-warning/10 text-warning flex items-center justify-center text-xs font-semibold shrink-0">
-                        {emp.avatar}
+                        {emp.avatar || emp.name.split(" ").map((w) => w[0]).join("").slice(0, 2)}
                       </div>
                       <div>
                         <p className="text-sm font-medium text-foreground">{emp.name}</p>
-                        <p className="text-[10px] text-muted-foreground">LWD: {emp.lastWorkingDay}</p>
+                        <p className="text-[10px] text-muted-foreground">LWD: {emp.last_working_day || "TBD"}</p>
                       </div>
                     </div>
                     <span className="text-xs font-semibold text-foreground">{progress}%</span>
