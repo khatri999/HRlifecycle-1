@@ -4,10 +4,11 @@ import { TaskDetailDialog } from "@/components/shared/TaskDetailDialog";
 import { DepartmentClearanceTracker } from "@/components/shared/DepartmentClearanceTracker";
 import { Progress } from "@/components/ui/progress";
 import { employees, exitTasks, generateExitTasks, type ExitTask } from "@/data/mockData";
-import { useState } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { CheckCircle2, Clock, AlertCircle, ChevronDown, ChevronRight, MessageSquare, Paperclip, Plus, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { startReminderPolling } from "@/services/exitReminderEngine";
 
 const exitSteps = [
   "Resignation Submitted",
