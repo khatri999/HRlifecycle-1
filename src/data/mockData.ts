@@ -1,7 +1,7 @@
 export type EmployeeStatus = "active" | "onboarding" | "notice-period" | "exited";
 export type OnboardingStatus = "not-started" | "in-progress" | "completed";
 export type ExitStatus = "none" | "resignation-submitted" | "notice-period" | "clearance" | "completed";
-export type TaskStatus = "pending" | "in-progress" | "completed" | "overdue";
+export type TaskStatus = "pending" | "in-progress" | "completed" | "overdue" | "delayed";
 export type Department = "Engineering" | "Design" | "Marketing" | "HR" | "Finance" | "Admin" | "IT";
 export type TaskDepartment = "HR" | "IT" | "Admin" | "Manager" | "Employee" | "Finance";
 
