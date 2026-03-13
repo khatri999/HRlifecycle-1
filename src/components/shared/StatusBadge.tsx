@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-type StatusType = "active" | "onboarding" | "notice-period" | "exited" | "completed" | "in-progress" | "pending" | "overdue" | "not-started" | "resignation-submitted" | "clearance" | "none";
+type StatusType = "active" | "onboarding" | "notice-period" | "exited" | "completed" | "in-progress" | "pending" | "overdue" | "delayed" | "not-started" | "resignation-submitted" | "clearance" | "none";
 
 const statusConfig: Record<StatusType, { label: string; className: string }> = {
   active: { label: "Active", className: "bg-success/10 text-success" },
