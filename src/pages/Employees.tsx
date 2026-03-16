@@ -102,7 +102,7 @@ const Employees = () => {
                 </tr>
               ) : (
                 filtered.map((emp) => (
-                  <tr key={emp.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors">
+                  <tr key={emp.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors cursor-pointer" onClick={() => setSelectedEmployee(emp)}>
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-semibold shrink-0">
