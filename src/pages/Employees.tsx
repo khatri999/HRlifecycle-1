@@ -4,16 +4,18 @@ import { Search, Plus, Upload } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { useEmployees, computeExperience } from "@/hooks/useEmployees";
+import { useEmployees, computeExperience, type EmployeeRow } from "@/hooks/useEmployees";
 import { AddEmployeeDialog } from "@/components/employees/AddEmployeeDialog";
 import { ImportDataDialog } from "@/components/employees/ImportDataDialog";
 import { ExportDataDropdown } from "@/components/employees/ExportDataDropdown";
+import { EmployeeProfileDialog } from "@/components/employees/EmployeeProfileDialog";
 
 const Employees = () => {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<string>("all");
   const [addOpen, setAddOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState<EmployeeRow | null>(null);
 
   const { data: employees = [], isLoading } = useEmployees();
 
