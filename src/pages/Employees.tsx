@@ -135,6 +135,7 @@ const Employees = () => {
 
       <AddEmployeeDialog open={addOpen} onOpenChange={setAddOpen} />
       <ImportDataDialog open={importOpen} onOpenChange={setImportOpen} />
+      <EmployeeProfileDialog employee={selectedEmployee} open={!!selectedEmployee} onOpenChange={(open) => { if (!open) setSelectedEmployee(null); }} />
     </AppLayout>
   );
 };
