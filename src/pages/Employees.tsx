@@ -4,16 +4,18 @@ import { Search, Plus, Upload } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { useEmployees, computeExperience } from "@/hooks/useEmployees";
+import { useEmployees, computeExperience, type EmployeeRow } from "@/hooks/useEmployees";
 import { AddEmployeeDialog } from "@/components/employees/AddEmployeeDialog";
 import { ImportDataDialog } from "@/components/employees/ImportDataDialog";
 import { ExportDataDropdown } from "@/components/employees/ExportDataDropdown";
+import { EmployeeProfileDialog } from "@/components/employees/EmployeeProfileDialog";
 
 const Employees = () => {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<string>("all");
   const [addOpen, setAddOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState<EmployeeRow | null>(null);
 
   const { data: employees = [], isLoading } = useEmployees();
 
@@ -100,7 +102,7 @@ const Employees = () => {
                 </tr>
               ) : (
                 filtered.map((emp) => (
-                  <tr key={emp.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors">
+                  <tr key={emp.id} className="border-b border-border/50 hover:bg-muted/20 transition-colors cursor-pointer" onClick={() => setSelectedEmployee(emp)}>
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-semibold shrink-0">
@@ -133,6 +135,7 @@ const Employees = () => {
 
       <AddEmployeeDialog open={addOpen} onOpenChange={setAddOpen} />
       <ImportDataDialog open={importOpen} onOpenChange={setImportOpen} />
+      <EmployeeProfileDialog employee={selectedEmployee} open={!!selectedEmployee} onOpenChange={(open) => { if (!open) setSelectedEmployee(null); }} />
     </AppLayout>
   );
 };

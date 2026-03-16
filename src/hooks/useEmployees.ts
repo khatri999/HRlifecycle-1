@@ -83,6 +83,30 @@ export function useAddEmployee() {
   });
 }
 
+export function useUpdateEmployee() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, ...fields }: Partial<EmployeeRow> & { id: string }) => {
+      const { data, error } = await supabase
+        .from("employees")
+        .update(fields)
+        .eq("id", id)
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["employees"] });
+      qc.invalidateQueries({ queryKey: ["employee-stats"] });
+      toast.success("Employee updated successfully");
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Failed to update employee");
+    },
+  });
+}
+
 export function useBulkInsertEmployees() {
   const qc = useQueryClient();
   return useMutation({
